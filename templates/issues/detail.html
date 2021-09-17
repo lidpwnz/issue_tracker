@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ issue.summary }}</h1>
+    <h3>{{ issue.status }}</h3>
+    <h5>
+        {{ issue.created_at }} <br>
+        {{ issue.updated_at }}
+    </h5>
+    <p>
+        {{ issue.description }}
+    </p>
+    <ul>
+        {% for type in issue.type.all %}
+            <li>{{ type }}</li>
+        {% endfor %}
+
+    </ul>
+
+    <a href="{% url 'projects:project_detail' issue.project_id %}" class="btn btn-primary">Go to project</a>
+{% endblock %}

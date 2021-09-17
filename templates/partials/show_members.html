@@ -1,0 +1,11 @@
+<li class="list-group-item d-none" id="showNewMember">
+    <form action="{% url 'projects:project_add_member' project.pk %}" method="post">
+        {% csrf_token %}
+        <select name="user" id="" class="form-select">
+            {% for obj in users_not_in_project %}
+                <option value="{{ obj.pk }}">{{ obj.username }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-success mt-3 w-100">Add</button>
+    </form>
+</li>

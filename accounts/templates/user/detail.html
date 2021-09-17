@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-3">
+            {% if user_obj.profile.avatar %}
+                <img class="avatar" src="{{ user_obj.profile.avatar.url }}" width="250" height="250" alt="user picture">
+            {% endif %}
+        </div>
+        <div class="col-9">
+            <h1>{{ user_obj.username }}'s page</h1>
+            <p>Username: {{ user_obj.username }} <a href="{{ user_obj.profile.github_link }}"><i
+                    class="fab fa-github ms-2 github-color"></i></a></p>
+            About me:
+            <p>
+                {{ user_obj.profile.personal_info }}
+            </p>
+            <p>First name: {{ user_obj.first_name }}</p>
+            <p>Last name: {{ user_obj.last_name }}</p>
+            <p>Email: {{ user_obj.email }}</p>
+        </div>
+    </div>
+    {% include 'partials/projects_list.html' with projects=page_obj %}
+{% endblock %}

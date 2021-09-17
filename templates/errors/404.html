@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>Not found</h1>
+        <h4>{{ message }}</h4>
+        <p>There are some helpful links</p>
+        <ul>
+            <li>
+                <a href="{% url 'issues:issues_list' %}">Issues List</a>
+            </li>
+            <li>
+                <a href="{% url 'projects:projects_list' %}">Projects List</a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}

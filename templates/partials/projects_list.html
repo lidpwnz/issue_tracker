@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-9">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Create Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td><a href="{% url 'projects:project_detail' project.pk %}"
+                           class="text-break">{{ project.title }}</a></td>
+                    <td class="text-break">{{ project.description }}</td>
+                    <td>{{ project.create_date }}</td>
+                    <td>{{ project.end_date }}</td>
+
+                    {% if perms.issue_tracker.change_project %}
+                        <td><a href="{% url 'projects:project_update' project.pk %}"
+                               class="btn btn-primary">Edit</a></td>
+                        <td>
+                            <form action="{% url 'projects:project_delete' project.pk %}" method="post">
+                                {% csrf_token %}
+                                {% include 'partials/delete_button.html' %}
+                            </form>
+                        </td>
+                    {% else %}
+                        <td></td>
+                        <td></td>
+                    {% endif %}
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>
+                        <h2>No projects yet</h2>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if is_paginated %}
+            {% include 'partials/pagination.html' %}
+        {% endif %}
+    </div>
+    <div class="col-3">
+        {% include 'partials/filtration.html' with btn_text='Filter' %}
+    </div>
+</div>

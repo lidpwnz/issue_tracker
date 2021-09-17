@@ -1,0 +1,40 @@
+<div class="card my-4">
+    <div class="card-header">
+        <a href="{% url 'issues:issues_detail' issue.pk %}">
+            {{ issue.summary }}
+        </a>
+    </div>
+    <div class="card-body">
+        <div class="card-title">
+            Types:
+            <ul>
+                {% for type in issue.type.all %}
+                    <li>{{ type }}</li>
+                {% endfor %}
+            </ul>
+            Status: {{ issue.status }}
+        </div>
+        <label>
+            <textarea class="card-text border border-2 border-warning" cols="50" rows="7"
+                      disabled>{{ issue.description }}</textarea>
+        </label>
+        <div class="datetime_block my-4">
+            Created: {{ issue.created_at }} <br>
+            Updated: {{ issue.updated_at }}
+        </div>
+
+            {% if not project_users or user.pk in project_users or user.is_superuser %}
+                <div class="d-flex">
+                    <a href="{% url 'issues:issues_update' pk=issue.pk %}" class="btn btn-primary me-3">Edit</a>
+
+                    {% if perms.issue_tracker.delete_issue %}
+                        <form action="{% url 'issues:issues_delete' pk=issue.pk %}" method="post">
+                            {% csrf_token %}
+                            {% include 'partials/delete_button.html' %}
+                        </form>
+                    {% endif %}
+
+                </div>
+            {% endif %}
+    </div>
+</div>

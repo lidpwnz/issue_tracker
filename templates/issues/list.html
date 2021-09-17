@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-9">
+            {% for issue in issues %}
+                {% include 'partials/issue_detail.html' %}
+            {% endfor %}
+            {% if is_paginated %}
+                {% include 'partials/pagination.html' %}
+            {% endif %}
+        </div>
+        <div class="col-3">
+            {% include 'partials/filtration.html' %}
+        </div>
+    </div>
+{% endblock %}

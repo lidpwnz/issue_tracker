@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form action="{{ url }}" method="post" class="mt-4">
+    {% csrf_token %}
+    {% include 'partials/issue.html' %}
+    </form>
+{% endblock %}

@@ -1,0 +1,36 @@
+<form method="get" class="mt-4" id="filter-form">
+    {% for field in my_filter.form %}
+        {{ field.label }}
+        {{ field }}
+    {% endfor %}
+    <div class="mt-4">
+        {% include 'partials/submit_button.html' %}
+    </div>
+</form>
+<script>
+
+    const getParameter = (jQueryItem) => {
+        return `${jQueryItem.attr("name")}=${jQueryItem.val()}`
+    }
+
+    $(function () {
+        let location = '?';
+        const form = $("#filter-form");
+        form.submit(function (e) {
+            const formChildren = form.children();
+            e.preventDefault()
+            for (let i = 0; i < formChildren.length; i++) {
+                const jQueryItem = $(formChildren[i])
+                if (jQueryItem.val() !== "") {
+                    if (location === "?") {
+                        location += getParameter(jQueryItem)
+                    } else {
+                        location += `&${getParameter(jQueryItem)}`
+                    }
+                }
+            }
+            window.location.href = location;
+            return true;
+        });
+    });
+</script>
