@@ -1,4 +1,5 @@
 from django.contrib.auth import login, get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from issue_tracker.filters.projects_filter import ProjectFilter
@@ -43,8 +44,9 @@ class UserDetailView(DetailView):
         return super(UserDetailView, self).get_context_data(**kwargs, **self.get_pagination_context())
 
 
-class ListUsers(ListView):
+class ListUsers(PermissionRequiredMixin, ListView):
     template_name = 'user/list.html'
     context_object_name = 'users'
     model = User
     paginate_by = 10
+    permission_required = 'auth.view_user'
