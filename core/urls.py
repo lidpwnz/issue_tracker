@@ -24,9 +24,12 @@ from django.conf.urls.static import static
 handler404 = error_404
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('', IssuesRedirect.as_view(), name='main_page'),
     path('issues/', include('issue_tracker.urls.issues_urls', namespace='issues')),
     path('projects/', include('issue_tracker.urls.projects_urls', namespace='projects')),
-    path('accounts/', include('accounts.urls', 'acc'))
+    path('accounts/', include('accounts.urls', namespace='acc')),
+    path('', include('django.contrib.auth.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

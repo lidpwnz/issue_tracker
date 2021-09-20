@@ -1,5 +1,5 @@
 from abc import abstractmethod
-
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render
 from django.utils.http import urlencode
@@ -94,14 +94,15 @@ class SearchView(BaseListView):
 
 
 class MembersOperationsMixin(View):
-    project = None
+    object = None
+    model = Project
 
     def get_project(self):
         pk = self.kwargs.get('project_pk')
-        return Project.objects.get(pk=pk)
+        return self.model.objects.get(pk=pk)
 
     def dispatch(self, request, *args, **kwargs):
-        self.project = self.get_project()
+        self.object = self.get_project()
         return super().dispatch(request, *args, **kwargs)
 
     def get_user(self):

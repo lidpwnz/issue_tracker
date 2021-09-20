@@ -38,6 +38,7 @@ class Project(models.Model):
     title = models.CharField(max_length=100, verbose_name='Title')
     description = models.TextField(verbose_name='Description')
     is_deleted = models.BooleanField(default=False)
+    users = models.ManyToManyField(get_user_model(), blank=True, related_name='projects')
     create_date = models.DateField(verbose_name='Started Date')
     end_date = models.DateField(null=True, blank=True, verbose_name='End Date')
 
@@ -45,8 +46,8 @@ class Project(models.Model):
         return f'{self.title} {self.create_date} {self.end_date}'
 
 
-class ProjectUsers(models.Model):
-    project = models.ForeignKey('issue_tracker.Project', on_delete=models.CASCADE, related_name='users')
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='projects')
-    add_time = models.DateTimeField(auto_now_add=True)
-    del_time = models.DateTimeField(blank=True, null=True)
+# class ProjectUsers(models.Model):
+#     project = models.ForeignKey('issue_tracker.Project', on_delete=models.CASCADE, related_name='users')
+#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='projects')
+#     add_time = models.DateTimeField(auto_now_add=True)
+#     del_time = models.DateTimeField(blank=True, null=True)

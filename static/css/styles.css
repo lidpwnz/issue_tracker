@@ -105,3 +105,13 @@
 .clear {
     clear: both;
 }
+
+
+.floating__input {
+  padding: 20px 44px 7px 20px;
+  font-size: 17px;
+  transition: border-color 0.2s ease;
+  caret-color: mediumpurple;
+  border: unset;
+  width: 100%;
+}

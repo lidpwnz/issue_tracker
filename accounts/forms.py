@@ -1,7 +1,9 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
+from django import forms
+from django.contrib.auth import get_user_model
+from accounts.models import Profile
 
 
 class CreateUserForm(UserCreationForm):
@@ -20,3 +22,26 @@ class CreateUserForm(UserCreationForm):
         if User.objects.filter(username=username).exists():
             raise ValidationError('User already exists!')
         return username
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['first_name', 'last_name', 'email']
+        labels = {'first_name': 'First Name', 'last_name': 'Last Name', 'email': 'Email'}
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control mb-3'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control mb-3'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control mb-3'})
+        }
+
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        exclude = ['user']
+        widgets = {
+            'github_link': forms.URLInput(attrs={'class': 'form-control mb-3'}),
+            'personal_info': forms.Textarea(attrs={'class': 'form-control mb-3'}),
+            'avatar': forms.FileInput(attrs={'class': 'form-control mb-3'})
+        }

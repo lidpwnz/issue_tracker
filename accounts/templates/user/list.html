@@ -14,7 +14,7 @@
         {% for user in users %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
-                <td><a href="{% url 'accounts:profile' user.pk %}">{{ user.username }}</a></td>
+                <td><a href="{% url 'acc:profile' user.pk %}">{{ user.username }}</a></td>
                 <td>{{ user.profile.github_link }}</td>
                 <td>{{ user.email }}</td>
             </tr>

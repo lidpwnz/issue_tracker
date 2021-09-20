@@ -6,10 +6,9 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView, D
 from issue_tracker.filters.issues_filter import IssueFilter
 from issue_tracker.forms.project_form import ProjectForm
 from issue_tracker.helpers.views import SearchView, MembersOperationsMixin
-from issue_tracker.models import Project, ProjectUsers
+from issue_tracker.models import Project
 from issue_tracker.filters.projects_filter import ProjectFilter
 from django.contrib.auth import get_user_model
-from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -64,7 +63,7 @@ class ProjectDetail(DetailView):
 
         return context
 
-    def get_issues(self):   
+    def get_issues(self):
         return self.object.issues.filter(is_deleted=False).order_by('-created_at')
 
     def get_filter(self):
@@ -72,8 +71,10 @@ class ProjectDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
-        project_users = ProjectUsers.objects.filter(project_id=self.object.pk).values_list('user_id', flat=True)
+        project_users = self.object.users.values_list('id', flat=True)
+        print(project_users)
         users_not_in_project = get_user_model().objects.exclude(id__in=project_users)
+        print(users_not_in_project)
         context.update({'my_filter': self.get_filter(), 'btn_text': 'Filter', **self.get_pagination_context(),
                         'users_not_in_project': users_not_in_project, 'project_users': project_users})
         return context
@@ -89,7 +90,7 @@ class ProjectCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        ProjectUsers.objects.create(user=self.request.user, project=self.object)
+        self.object.users.add(user=self.request.user)
         return redirect(self.get_success_url())
 
 
@@ -130,23 +131,23 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
         return redirect(self.success_url)
 
 
-class ProjectAddMember(MembersOperationsMixin, CreateView):
+class ProjectAddMember(MembersOperationsMixin):
     def action(self):
         user = self.get_user()
-        ProjectUsers.objects.create(user=user, project=self.project).save()
+        self.object.users.add(user)
 
     def post(self, request, *args, **kwargs):
         self.action()
-        return redirect('projects:project_detail', pk=self.project.pk)
+        return redirect('projects:project_detail', pk=self.object.pk)
 
 
-class ProjectDelMember(MembersOperationsMixin, View):
+class ProjectDelMember(MembersOperationsMixin):
     def action(self):
         user = self.get_user()
-        ProjectUsers.objects.get(user_id=user.pk).delete()
+        self.object.users.remove(user)
 
     def get_success_url(self):
-        return reverse('projects:project_detail', kwargs={'pk': self.project.pk})
+        return reverse('projects:project_detail', kwargs={'pk': self.object.pk})
 
     def get(self, request, *args, **kwargs):
         self.action()

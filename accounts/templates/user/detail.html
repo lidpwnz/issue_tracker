@@ -19,6 +19,7 @@
             <p>First name: {{ user_obj.first_name }}</p>
             <p>Last name: {{ user_obj.last_name }}</p>
             <p>Email: {{ user_obj.email }}</p>
+            <a class="btn btn-primary" href="{% url 'acc:user_update' user_obj.pk %}">Edit</a>
         </div>
     </div>
     {% include 'partials/projects_list.html' with projects=page_obj %}

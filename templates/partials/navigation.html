@@ -9,7 +9,7 @@
             <ul class="navbar-nav">
                 {% if perms.accounts.view_user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:list_users' %}">Users</a>
+                        <a class="nav-link" href="{% url 'acc:list_users' %}">Users</a>
                     </li>
                 {% endif %}
 
@@ -31,7 +31,7 @@
                            onclick="return confirm('Are you sure?')">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:profile' user.pk %}">Hello {{ user }}!</a>
+                        <a class="nav-link" href="{% url 'acc:profile' user.pk %}">Hello {{ user }}!</a>
                     </li>
                 {% else %}
                     <li class="nav-item">

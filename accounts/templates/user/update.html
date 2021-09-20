@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="{% url "acc:profile" user_obj.pk %}">Back</a>
+    <a href="#">Change password</a>
+
+    <h1>Update profile</h1>
+    <form action="{% url 'acc:user_update' user_obj.pk %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% include 'partials/form.html' with form=form fields_only=True %}
+        {% include 'partials/form.html' with form=profile_form fields_only=True %}
+        <br>
+        <div class="mb-5">
+            {% include 'partials/submit_button.html' %}
+        </div>
+    </form>
+{% endblock %}

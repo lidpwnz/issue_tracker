@@ -7,7 +7,7 @@ from datetime import date
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        exclude = ['is_deleted']
+        exclude = ['is_deleted', 'users']
 
         widgets = {
             'title': forms.TextInput(attrs={

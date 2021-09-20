@@ -26,4 +26,4 @@ class AccountsMixin(ContextMixin, View):
         return self.request.GET.get('next', self.request.POST.get('next', ''))
 
     def get_success_url(self):
-        return self.get_next_url() or reverse_lazy('accounts:profile', kwargs={'pk': self.request.user.pk})
+        return self.get_next_url() or reverse_lazy('acc:profile', kwargs={'pk': self.request.user.pk})

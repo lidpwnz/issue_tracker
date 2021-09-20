@@ -1,0 +1,25 @@
+{% if not fields_only %}
+    <form action="{{ action_url }}" method="{{ form_method }}" enctype="{{ enctype }}">
+        {% csrf_token %}
+{% endif %}
+
+        {% for error in form.non_field_errors %}
+            <p class="error">{{ error }}</p>
+        {% endfor %}
+
+        {% for field in form %}
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {{ field.label }}
+            {{ field }}
+        {% endfor %}
+
+{% if not fields_only %}
+        <br/>
+        {% include 'partials/submit_button.html' %}
+    </form>
+{% endif %}

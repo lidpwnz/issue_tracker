@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Type, Status, Issue, Project, ProjectUsers
+from .models import Type, Status, Issue, Project
 from .utils import TypeAndStatusAdminMixIn
 
 
@@ -23,4 +23,3 @@ admin.site.register(Type, TypeAdmin)
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Issue, IssueAdmin)
 admin.site.register(Project)
-admin.site.register(ProjectUsers)
