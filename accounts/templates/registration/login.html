@@ -34,14 +34,29 @@
                     </form>
                 </div>
 
-                {{ form.errors }}
+                {% if form.errors %}
+                    {% for error in form.errors.values.0 %}
+                        <div class="alert alert-danger mt-4">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                    {% for non_f_error in form.non_field_errors %}
+                        <div class="alert alert-danger mt-4">{{ non_f_error }}</div>
+                    {% endfor %}
+                {% endif %}
 
                 <div class="mt-4">
                     <div class="d-flex justify-content-center links">
                         Don't have an account?
-                        <a href="{% url 'acc:register' %}{% if next_url %}?next_url={{ next_url }}{% endif %}" class="ml-2">Sign Up</a>
+                        <a href="{% url 'acc:register' %}{% if next_url %}?next_url={{ next_url }}{% endif %}"
+                           class="ml-2">Sign Up</a>
                     </div>
-
+                    <div class="d-flex justify-content-center links">
+                        Forgot your password?
+                        <a href="{% url 'acc:password_reset' %}"
+                           class="ml-2">Reset Password</a>
+                    </div>
                 </div>
             </div>
         </div>
