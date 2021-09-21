@@ -14,9 +14,20 @@
 <body class="login_block">
 {% include 'partials/navigation.html' with next_url=next_url %}
 <div class="mt-5">
-    {% block content %}
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                {% block title %}
 
-    {% endblock %}
+                {% endblock %}
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                {% block content %}
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

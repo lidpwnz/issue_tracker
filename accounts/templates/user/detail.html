@@ -4,10 +4,10 @@
     <div class="row">
         <div class="col-3 mt-2">
             {% if user_obj.profile.avatar %}
-                <img class="avatar w-100" src="{{ user_obj.profile.avatar.url }}"  height="250" alt="user picture">
+                <img class="avatar w-100" src="{{ user_obj.profile.avatar.url }}" height="250" alt="user picture">
             {% endif %}
             <a class="btn btn-primary w-100" href="{% url 'acc:user_update' user_obj.pk %}">Edit</a>
-
+            <a class="btn btn-primary w-100 mt-2" href="{% url 'acc:change_password' user_obj.pk %}">Change Password</a>
         </div>
         <div class="col-9">
             <h1>{{ user_obj.username }}'s page</h1>

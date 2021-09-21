@@ -72,16 +72,16 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
         form = self.get_form()
         profile_form = self.get_profile_form()
         if form.is_valid() and profile_form.is_valid():
-            return self.form_valid(form, profile_form)
+            return self.my_form_valid_method(form, profile_form)
         else:
-            return self.form_invalid(form, profile_form)
+            return self.my_form_invalid_method(form, profile_form)
 
-    def form_valid(self, form, profile_form):
+    def my_form_valid_method(self, form, profile_form):
         response = super().form_valid(form)
         profile_form.save()
         return response
 
-    def form_invalid(self, form, profile_form):
+    def my_form_invalid_method(self, form, profile_form):
         context = self.get_context_data(form=form, profile_form=profile_form)
         return self.render_to_response(context)
 
