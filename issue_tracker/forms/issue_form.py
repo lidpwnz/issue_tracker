@@ -32,6 +32,12 @@ class IssueForm(ModelForm):
 
         return data
 
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if len(description) < 11:
+            raise ValidationError('Description must be grater than 10!')
+        return description
+
 
 class SearchForm(Form):
     search = forms.CharField(max_length=150, required=False)
