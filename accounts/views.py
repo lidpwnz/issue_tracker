@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth import login, get_user_model
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
 from django.core.paginator import Paginator
 from issue_tracker.filters.projects_filter import ProjectFilter
@@ -56,7 +56,7 @@ class ListUsers(PermissionRequiredMixin, ListView):
     permission_required = 'auth.view_user'
 
 
-class UserUpdateView(UpdateView):
+class UserUpdateView(UserPassesTestMixin, UpdateView):
     model = get_user_model()
     template_name = 'user/update.html'
     form_class = UserUpdateForm
@@ -104,12 +104,18 @@ class UserUpdateView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
 
+    def test_func(self):
+        return self.request.user == self.get_object()
 
-class UserChangePasswordView(UpdateView):
+
+class UserChangePasswordView(UserPassesTestMixin, UpdateView):
     model = get_user_model()
     template_name = 'user/change_password.html'
     form_class = UserChangePasswordForm
     context_object_name = 'user_obj'
+
+    def test_func(self):
+        return self.request.user == self.get_object()
 
     def get_success_url(self):
         return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
