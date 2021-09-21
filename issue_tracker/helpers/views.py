@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from django.db.models import Q
+from django.db.models import Q      # Нужно для работоспособности SearchView
 from django.http import Http404
 from django.shortcuts import render
 from django.utils.http import urlencode

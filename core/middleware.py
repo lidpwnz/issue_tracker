@@ -1,5 +1,4 @@
 import re
-
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 

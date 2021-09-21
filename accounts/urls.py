@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from .views import RegisterView, MyLoginView, UserDetailView, ListUsers, UserUpdateView, UserChangePasswordView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
