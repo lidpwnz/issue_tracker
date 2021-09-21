@@ -17,6 +17,11 @@ class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'password1', 'password2', 'email']
+        widgets = {
+            'password1': forms.PasswordInput(attrs=get_widget_attrs(type='password')),
+            'password2': forms.PasswordInput(attrs=get_widget_attrs(type='password')),
+            'email': forms.EmailInput(attrs=get_widget_attrs(type='email')),
+        }
 
     def clean(self):
         first_name = self.cleaned_data.get('first_name')

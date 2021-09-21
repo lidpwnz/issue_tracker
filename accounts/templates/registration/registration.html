@@ -17,9 +17,7 @@
                     {% endfor %}
                 {% endif %}
                 {{ field.label }}
-                <div class="input-group mb-3">
-                    {{ field }}
-                </div>
+                {{ field }}
             {% endfor %}
 
             {% for error in form.non_field_errors %}
@@ -40,8 +38,9 @@
     <script>
         const form_fields = document.getElementsByTagName('input')
 
-        for (let field of form_fields) {
-            form_fields[field].className += ' form-control'
+        for (let field in form_fields) {
+            console.log(field)
+            form_fields[field].className += ' form-control mb-3'
         }
     </script>
 {% endblock %}

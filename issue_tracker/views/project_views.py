@@ -9,7 +9,7 @@ from issue_tracker.helpers.views import SearchView, MembersOperationsMixin
 from issue_tracker.models import Project
 from issue_tracker.filters.projects_filter import ProjectFilter
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 
 
 class ProjectsList(ListView):
@@ -72,21 +72,20 @@ class ProjectDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(ProjectDetail, self).get_context_data(**kwargs)
         project_users = self.object.users.values_list('id', flat=True)
-        print(project_users)
         users_not_in_project = get_user_model().objects.exclude(id__in=project_users)
-        print(users_not_in_project)
         context.update({'my_filter': self.get_filter(), 'btn_text': 'Filter', **self.get_pagination_context(),
                         'users_not_in_project': users_not_in_project, 'project_users': project_users})
         return context
 
 
-class ProjectCreate(LoginRequiredMixin, CreateView):
+class ProjectCreate(PermissionRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'projects/project.html'
     extra_context = {'btn_text': 'Create Project', 'url': reverse_lazy('projects:project_create')}
     success_url = reverse_lazy('projects:projects_list')
     object = None
+    permission_required = 'issue_tracker.add_project'
 
     def form_valid(self, form):
         self.object = form.save()
@@ -94,17 +93,21 @@ class ProjectCreate(LoginRequiredMixin, CreateView):
         return redirect(self.get_success_url())
 
 
-class ProjectUpdate(LoginRequiredMixin, UpdateView):
+class ProjectUpdate(UserPassesTestMixin, PermissionRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = 'projects/project.html'
     extra_context = {'btn_text': 'Update Project'}
+    permission_required = 'issue_tracker.change_project'
 
     def get_form(self, form_class=None):
         form = super().get_form()
         form.fields['create_date'].widget.attrs.update({'min': self.object.create_date})
         form.fields['end_date'].widget.attrs.update({'min': self.object.create_date})
         return form
+
+    def test_func(self):
+        return self.request.user in self.get_object().users.all()
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdate, self).get_context_data(**kwargs)
@@ -120,9 +123,13 @@ class ProjectsSearch(SearchView):
     search_fields_methods = ['icontains', 'icontains', 'icontains']
 
 
-class ProjectDelete(LoginRequiredMixin, DeleteView):
+class ProjectDelete(UserPassesTestMixin, PermissionRequiredMixin, DeleteView):
     model = Project
     success_url = reverse_lazy('projects:projects_list')
+    permission_required = 'issue_tracker.delete_project'
+
+    def test_func(self):
+        return self.request.user in self.get_object().users.all()
 
     def delete(self, request, *args, **kwargs):
         project = self.get_object()

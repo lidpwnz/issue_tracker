@@ -5,6 +5,8 @@
         <div class="col-9">
             {% for issue in issues %}
                 {% include 'partials/issue_detail.html' %}
+            {% empty %}
+                <h2 class="mt-5">You have no issues</h2>
             {% endfor %}
             {% if is_paginated %}
                 {% include 'partials/pagination.html' %}
