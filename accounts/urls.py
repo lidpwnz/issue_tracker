@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import RegisterView, MyLoginView, UserDetailView, ListUsers, UserUpdateView
+from .views import RegisterView, MyLoginView, UserDetailView, ListUsers, UserUpdateView, UserChangePasswordView
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', MyLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('<int:pk>/password_change/', UserChangePasswordView.as_view(), name='change_password'),
     path('<int:pk>/profile', UserDetailView.as_view(), name='profile'),
     path('', ListUsers.as_view(), name='list_users'),
     path('<int:pk>/update', UserUpdateView.as_view(), name='user_update'),

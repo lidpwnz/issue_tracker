@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <a href="{% url "acc:profile" user_obj.pk %}">Back</a>
-    <a href="#">Change password</a>
+    <a href="{{ request.META.HTTP_REFERER }}">Back</a>
+    <a href="{% url 'acc:change_password' user_obj.pk %}">Change password</a>
 
     <h1>Update profile</h1>
     <form action="{% url 'acc:user_update' user_obj.pk %}" method="post" enctype="multipart/form-data">

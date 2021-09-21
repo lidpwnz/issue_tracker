@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth import views as auth_views
 from django.core.paginator import Paginator
 from issue_tracker.filters.projects_filter import ProjectFilter
-from .forms import CreateUserForm, ProfileUpdateForm, UserUpdateForm
+from .forms import CreateUserForm, ProfileUpdateForm, UserUpdateForm, UserChangePasswordForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
@@ -13,14 +13,7 @@ from django.urls import reverse_lazy
 
 
 class MyLoginView(AccountsMixin, auth_views.LoginView):
-    def form_invalid(self, form):
-        print(list(form.errors.values())[0])
-        print(form.errors.as_text())
-        print(form.errors.as_ul())
-        print(form.errors.as_json())
-        print(1231321, form.non_field_errors())
-        print(dir(form.errors))
-        return super().form_invalid(form)
+    pass
 
 
 class RegisterView(AccountsMixin, CreateView):
@@ -107,6 +100,16 @@ class UserUpdateView(UpdateView):
             self.delete_old_photo()
 
         return ProfileUpdateForm(**form_kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
+
+
+class UserChangePasswordView(UpdateView):
+    model = get_user_model()
+    template_name = 'user/change_password.html'
+    form_class = UserChangePasswordForm
+    context_object_name = 'user_obj'
 
     def get_success_url(self):
         return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
