@@ -7,6 +7,11 @@
                 <img class="avatar w-100" src="{{ user_obj.profile.avatar.url }}" height="250" alt="user picture">
             {% endif %}
             {% if user == user_obj %}
+                <form action="{% url 'acc:user_delete_photo' user.pk %}" method="post" class="mb-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="avatar" value="{{ user.profile.avatar.url }}">
+                    {% include 'partials/delete_button.html' with btn_text='Delete Photo' additional_classes='w-100' delete_item='avatar' %}
+                </form>
                 <a class="btn btn-primary w-100" href="{% url 'acc:user_update' user_obj.pk %}">Edit</a>
                 <a class="btn btn-primary w-100 mt-2" href="{% url 'acc:change_password' user_obj.pk %}">
                     Change Password

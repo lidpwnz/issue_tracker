@@ -1,3 +1,5 @@
+import os
+from django.conf import settings
 from django.views.generic.base import ContextMixin, View
 from django.urls import reverse_lazy
 
@@ -27,3 +29,17 @@ class AccountsMixin(ContextMixin, View):
 
     def get_success_url(self):
         return self.get_next_url() or reverse_lazy('acc:profile', kwargs={'pk': self.request.user.pk})
+
+
+class DeleteOldPhotoMixin(View):
+    object = None
+
+    def delete_old_photo(self, avatar=None):
+        avatar = self.request.FILES.get('avatar') if not avatar else avatar
+        current_avatar = self.request.user.profile.avatar
+
+        if avatar and current_avatar != settings.AVATARS_DEFAULT_VALUE:
+            try:
+                os.remove(self.object.profile.avatar.path)
+            except Exception as e:
+                print('Exception in removing old profile image: ', e)

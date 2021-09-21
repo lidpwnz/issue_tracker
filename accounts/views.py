@@ -1,4 +1,4 @@
-import os
+from django.conf import settings
 from django.contrib.auth import login, get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
@@ -7,9 +7,10 @@ from issue_tracker.filters.projects_filter import ProjectFilter
 from .forms import CreateUserForm, ProfileUpdateForm, UserUpdateForm, UserChangePasswordForm
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
 from .helpers import AccountsMixin
 from django.urls import reverse_lazy
+from accounts.helpers import DeleteOldPhotoMixin
 
 
 class MyLoginView(AccountsMixin, auth_views.LoginView):
@@ -56,7 +57,7 @@ class ListUsers(PermissionRequiredMixin, ListView):
     permission_required = 'auth.view_user'
 
 
-class UserUpdateView(UserPassesTestMixin, UpdateView):
+class UserUpdateView(UserPassesTestMixin, DeleteOldPhotoMixin, UpdateView):
     model = get_user_model()
     template_name = 'user/update.html'
     form_class = UserUpdateForm
@@ -85,13 +86,6 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
         context = self.get_context_data(form=form, profile_form=profile_form)
         return self.render_to_response(context)
 
-    def delete_old_photo(self):
-        if self.request.FILES.get('avatar'):
-            try:
-                os.remove(self.object.profile.avatar.path)
-            except Exception as e:
-                print('Exception in removing old profile image: ', e)
-
     def get_profile_form(self):
         form_kwargs = {'instance': self.object.profile}
         if self.request.method == 'POST':
@@ -119,3 +113,16 @@ class UserChangePasswordView(UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
+
+
+class UserDeletePhotoView(DeleteOldPhotoMixin, DeleteView):
+    model = User
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        avatar = self.request.POST.get('avatar')
+        self.delete_old_photo(avatar=avatar)
+
+        self.object.profile.avatar = settings.AVATARS_DEFAULT_VALUE
+        self.object.profile.save()
+        return redirect('acc:profile', pk=self.object.pk)

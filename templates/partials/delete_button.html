@@ -1,1 +1,1 @@
-<button onclick="return confirm('Are you sure?')" class="btn btn-danger" type="submit">Delete</button>
+<button id="delete_{{ delete_item }}" onclick="return confirm('Are you sure?')" class="btn btn-danger {{ additional_classes }}" type="submit">{{ btn_text | default:'Delete' }}</button>

@@ -138,6 +138,8 @@ LOGIN_REDIRECT_URL = 'issues:issues_list'
 # MEDIA
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/uploads/'
+AVATARS_FOLDER = 'user_avatars'
+AVATARS_DEFAULT_VALUE = f"{AVATARS_FOLDER}/imageNotAvailable_grid.png"
 
 # EMAIL
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
