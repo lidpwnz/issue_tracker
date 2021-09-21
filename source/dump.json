@@ -355,11 +355,16 @@
     "model": "issue_tracker.project",
     "pk": 1,
     "fields": {
-        "title": "Test312",
+        "title": "Coca Cola",
         "description": "test",
         "is_deleted": false,
         "create_date": "2021-08-27",
-        "end_date": null
+        "end_date": null,
+        "users": [
+            1,
+            2,
+            5
+        ]
     }
 },
 {
@@ -370,57 +375,20 @@
         "description": "dasdasdasdasdasdas",
         "is_deleted": false,
         "create_date": "2021-09-15",
-        "end_date": null
+        "end_date": null,
+        "users": []
     }
 },
 {
-    "model": "issue_tracker.projectusers",
-    "pk": 1,
-    "fields": {
-        "project": 1,
-        "user": 2,
-        "add_time": "2021-09-15T05:48:04.087Z",
-        "del_time": null
-    }
-},
-{
-    "model": "issue_tracker.projectusers",
-    "pk": 2,
-    "fields": {
-        "project": 1,
-        "user": 1,
-        "add_time": "2021-09-15T06:42:25.902Z",
-        "del_time": null
-    }
-},
-{
-    "model": "issue_tracker.projectusers",
+    "model": "issue_tracker.project",
     "pk": 3,
     "fields": {
-        "project": 1,
-        "user": 5,
-        "add_time": "2021-09-15T06:42:29.315Z",
-        "del_time": null
-    }
-},
-{
-    "model": "issue_tracker.projectusers",
-    "pk": 4,
-    "fields": {
-        "project": 1,
-        "user": 4,
-        "add_time": "2021-09-15T06:42:32.014Z",
-        "del_time": null
-    }
-},
-{
-    "model": "issue_tracker.projectusers",
-    "pk": 5,
-    "fields": {
-        "project": 2,
-        "user": 2,
-        "add_time": "2021-09-15T06:53:50.956Z",
-        "del_time": null
+        "title": "1dasdasd",
+        "description": "asdasdasdasdasd",
+        "is_deleted": false,
+        "create_date": "2021-09-18",
+        "end_date": null,
+        "users": []
     }
 }
 ]
