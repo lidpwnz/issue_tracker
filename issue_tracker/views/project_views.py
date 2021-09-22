@@ -10,6 +10,7 @@ from issue_tracker.models import Project
 from issue_tracker.filters.projects_filter import ProjectFilter
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from issue_tracker.helpers.services import ProjectUserPassesTestMixin
 
 
 class ProjectsList(ListView):
@@ -89,11 +90,11 @@ class ProjectCreate(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        self.object.users.add(user=self.request.user)
+        self.object.users.add(self.request.user)
         return redirect(self.get_success_url())
 
 
-class ProjectUpdate(UserPassesTestMixin, PermissionRequiredMixin, UpdateView):
+class ProjectUpdate(ProjectUserPassesTestMixin, PermissionRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = 'projects/project.html'
@@ -105,9 +106,6 @@ class ProjectUpdate(UserPassesTestMixin, PermissionRequiredMixin, UpdateView):
         form.fields['create_date'].widget.attrs.update({'min': self.object.create_date})
         form.fields['end_date'].widget.attrs.update({'min': self.object.create_date})
         return form
-
-    def test_func(self):
-        return self.request.user in self.get_object().users.all()
 
     def get_context_data(self, **kwargs):
         context = super(ProjectUpdate, self).get_context_data(**kwargs)
