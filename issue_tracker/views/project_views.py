@@ -121,13 +121,10 @@ class ProjectsSearch(SearchView):
     search_fields_methods = ['icontains', 'icontains', 'icontains']
 
 
-class ProjectDelete(UserPassesTestMixin, PermissionRequiredMixin, DeleteView):
+class ProjectDelete(ProjectUserPassesTestMixin, PermissionRequiredMixin, DeleteView):
     model = Project
     success_url = reverse_lazy('projects:projects_list')
     permission_required = 'issue_tracker.delete_project'
-
-    def test_func(self):
-        return self.request.user in self.get_object().users.all()
 
     def delete(self, request, *args, **kwargs):
         project = self.get_object()

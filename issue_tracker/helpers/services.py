@@ -31,3 +31,10 @@ class ProjectUserPassesTestMixin(IsUserInObjectListMixin):
     def get_object_list(self):
         return self.get_object().users.all()
 
+
+class IssueUserPassesTestMixin(IsUserInObjectListMixin):
+    object = None
+
+    def get_object_list(self):
+        return self.get_object().project.users.all()
+

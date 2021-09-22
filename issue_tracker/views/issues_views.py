@@ -6,6 +6,7 @@ from django.views.generic import RedirectView, CreateView, DetailView, ListView,
 from issue_tracker.models import Issue, Project
 from issue_tracker.forms.issue_form import IssueForm
 from issue_tracker.filters.issues_filter import IssueFilter
+from issue_tracker.helpers.services import IssueUserPassesTestMixin
 
 
 class IssuesRedirect(RedirectView):
@@ -64,14 +65,11 @@ class IssueCreate(PermissionRequiredMixin, CreateView):
         return reverse('projects:project_detail', kwargs={'pk': self.object.project.pk})
 
 
-class IssueDetail(UserPassesTestMixin, PermissionRequiredMixin, DetailView):
+class IssueDetail(IssueUserPassesTestMixin, PermissionRequiredMixin, DetailView):
     model = Issue
     template_name = 'issues/detail.html'
     context_object_name = 'issue'
     permission_required = 'issue_tracker.view_issue'
-
-    def test_func(self):
-        return self.request.user in self.get_object().project.users.all()
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -81,7 +79,7 @@ class IssueDetail(UserPassesTestMixin, PermissionRequiredMixin, DetailView):
             return super(IssueDetail, self).get(request, *args, **kwargs)
 
 
-class IssueEdit(UserPassesTestMixin, PermissionRequiredMixin, UpdateView):
+class IssueEdit(IssueUserPassesTestMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'issues/issue.html'
     form_class = IssueForm
     model = Issue
@@ -94,14 +92,11 @@ class IssueEdit(UserPassesTestMixin, PermissionRequiredMixin, UpdateView):
         context['url'] = reverse('issues:issues_update', kwargs={'pk': self.object.pk})
         return context
 
-    def test_func(self):
-        return self.request.user in self.get_object().project.users.all()
-
     def get_success_url(self):
         return reverse('issues:issues_detail', kwargs={'pk': self.object.pk})
 
 
-class IssueDelete(UserPassesTestMixin, PermissionRequiredMixin, DeleteView):
+class IssueDelete(IssueUserPassesTestMixin, PermissionRequiredMixin, DeleteView):
     model = Issue
     success_url = reverse_lazy('issues:issues_list')
     permission_required = 'issue_tracker.delete_issue'
@@ -111,9 +106,6 @@ class IssueDelete(UserPassesTestMixin, PermissionRequiredMixin, DeleteView):
         self.object.is_deleted = True
         self.object.save()
         return redirect('issues:issues_list')
-
-    def test_func(self):
-        return self.request.user in self.get_object().project.users.all()
 
     def get_success_url(self):
         return reverse_lazy('projects:project_detail', kwargs={'pk': self.object.project_id})
