@@ -1,8 +1,10 @@
 from django.conf import settings
-from django.contrib.auth import login, get_user_model
+from django.contrib.auth import login, get_user_model, update_session_auth_hash
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import views as auth_views
 from django.core.paginator import Paginator
+from django.http import HttpResponseRedirect
+
 from issue_tracker.filters.projects_filter import ProjectFilter
 from .forms import CreateUserForm, ProfileUpdateForm, UserUpdateForm, UserChangePasswordForm
 from django.contrib.auth.models import User
@@ -110,6 +112,11 @@ class UserChangePasswordView(UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return self.request.user == self.get_object()
+
+    def form_valid(self, form):
+        user = form.save()
+        update_session_auth_hash(self.request, user)
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse_lazy('acc:profile', kwargs={'pk': self.object.pk})
