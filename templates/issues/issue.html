@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form action="{{ url }}" method="post" class="mt-4">
-    {% csrf_token %}
-    {% include 'partials/issue.html' %}
+    <form action="{{ request.get_full_path }}" method="post" class="mt-4">
+        <hr>
+        <h5 class="text-center">{{ btn_text | title }}</h5>
+        <hr>
+        {% include 'partials/form.html' %}
     </form>
 {% endblock %}

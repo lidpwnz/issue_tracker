@@ -43,3 +43,9 @@ class Project(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.create_date} {self.end_date}'
+
+    class Meta:
+        permissions = [
+            ('add_users_to_project', 'Able to add users to project'),
+            ('delete_users_from_project', 'Able to delete user from project'),
+        ]

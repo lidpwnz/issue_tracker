@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form action="{{ url }}" method="post">
+    <form action="{{ request.get_full_path }}" method="post">
     {% include 'partials/form.html' %}
     </form>
 {% endblock %}

@@ -1,6 +1,5 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
-from django.http import Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import RedirectView, CreateView, DetailView, ListView, UpdateView, DeleteView
 from issue_tracker.models import Issue, Project
@@ -24,10 +23,7 @@ class IssuesList(ListView):
 
     def get(self, request, *args, **kwargs):
         self.filter_object = self.get_filter_object()
-        try:
-            return super(IssuesList, self).get(request, *args, **kwargs)
-        except Http404:
-            return render(request, 'errors/404.html')
+        return super(IssuesList, self).get(request, *args, **kwargs)
 
     def get_user_issues(self):
         return self.model.objects.filter(project__users=self.request.user, is_deleted=False)
@@ -53,11 +49,6 @@ class IssueCreate(PermissionRequiredMixin, CreateView):
         form.instance.project = self.get_project()
         return super(IssueCreate, self).form_valid(form)
 
-    def get_context_data(self, **kwargs):
-        context = super(IssueCreate, self).get_context_data(**kwargs)
-        context.update({'url': reverse_lazy('projects:issues_create', kwargs={'project_pk': self.get_project().pk})})
-        return context
-
     def get_project(self):
         return get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
 
@@ -71,26 +62,14 @@ class IssueDetail(IssueUserPassesTestMixin, PermissionRequiredMixin, DetailView)
     context_object_name = 'issue'
     permission_required = 'issue_tracker.view_issue'
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_deleted:
-            raise Http404('There is no such issue!')
-        else:
-            return super(IssueDetail, self).get(request, *args, **kwargs)
-
 
 class IssueEdit(IssueUserPassesTestMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'issues/issue.html'
     form_class = IssueForm
     model = Issue
     context_object_name = 'issue'
+    extra_context = {'btn_text': 'edit issue'}
     permission_required = 'issue_tracker.change_issue'
-
-    def get_context_data(self, **kwargs):
-        context = super(IssueEdit, self).get_context_data(**kwargs)
-        context['btn_text'] = 'edit issue'
-        context['url'] = reverse('issues:issues_update', kwargs={'pk': self.object.pk})
-        return context
 
     def get_success_url(self):
         return reverse('issues:issues_detail', kwargs={'pk': self.object.pk})

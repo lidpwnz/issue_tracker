@@ -1,5 +1,4 @@
 from django.core.paginator import Paginator
-from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, ListView, UpdateView, DeleteView
@@ -9,7 +8,7 @@ from issue_tracker.helpers.views import SearchView, MembersOperationsMixin
 from issue_tracker.models import Project
 from issue_tracker.filters.projects_filter import ProjectFilter
 from django.contrib.auth import get_user_model
-from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from issue_tracker.helpers.services import ProjectUserPassesTestMixin
 
 
@@ -40,13 +39,6 @@ class ProjectDetail(DetailView):
     model = Project
     template_name = 'projects/detail.html'
     paginate_by = 5
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_deleted:
-            raise Http404("There is no such project!")
-        else:
-            return super(ProjectDetail, self).get(request, *args, **kwargs)
 
     def get_paginator(self):
         return Paginator(self.get_filter().qs, 5)
@@ -83,7 +75,7 @@ class ProjectCreate(PermissionRequiredMixin, CreateView):
     model = Project
     form_class = ProjectForm
     template_name = 'projects/project.html'
-    extra_context = {'btn_text': 'Create Project', 'url': reverse_lazy('projects:project_create')}
+    extra_context = {'btn_text': 'Create Project'}
     success_url = reverse_lazy('projects:projects_list')
     object = None
     permission_required = 'issue_tracker.add_project'
@@ -107,11 +99,6 @@ class ProjectUpdate(ProjectUserPassesTestMixin, PermissionRequiredMixin, UpdateV
         form.fields['end_date'].widget.attrs.update({'min': self.object.create_date})
         return form
 
-    def get_context_data(self, **kwargs):
-        context = super(ProjectUpdate, self).get_context_data(**kwargs)
-        context['url'] = reverse('projects:project_update', kwargs={'pk': self.object.pk})
-        return context
-
     def get_success_url(self):
         return reverse('projects:project_detail', kwargs={'pk': self.object.pk})
 
@@ -130,7 +117,7 @@ class ProjectDelete(ProjectUserPassesTestMixin, PermissionRequiredMixin, DeleteV
         project = self.get_object()
         project.is_deleted = True
         project.save()
-        return redirect(self.success_url)
+        return redirect(self.get_success_url())
 
 
 class ProjectAddMember(MembersOperationsMixin):
