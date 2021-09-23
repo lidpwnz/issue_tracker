@@ -86,7 +86,7 @@ class ProjectCreate(PermissionRequiredMixin, CreateView):
         return redirect(self.get_success_url())
 
 
-class ProjectUpdate(ProjectUserPassesTestMixin, PermissionRequiredMixin, UpdateView):
+class ProjectUpdate(PermissionRequiredMixin, UpdateView):
     model = Project
     form_class = ProjectForm
     template_name = 'projects/project.html'
