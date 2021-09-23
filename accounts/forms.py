@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django import forms
 from django.contrib.auth import get_user_model
 from accounts.models import Profile
+from.helpers import UserValidationMixin
 
 
 def get_widget_attrs(**kwargs):
@@ -13,7 +14,7 @@ def get_widget_attrs(**kwargs):
     return context
 
 
-class CreateUserForm(UserCreationForm):
+class CreateUserForm(UserValidationMixin, UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'password1', 'password2', 'email']
@@ -23,18 +24,6 @@ class CreateUserForm(UserCreationForm):
             'email': forms.EmailInput(attrs=get_widget_attrs(type='email')),
         }
 
-    def clean(self):
-        first_name = self.cleaned_data.get('first_name')
-        last_name = self.cleaned_data.get('last_name')
-        if not first_name and not last_name:
-            raise ValidationError('First name or last name required!')
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if not email:
-            raise ValidationError('Email is required!')
-        return email
-
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
@@ -42,7 +31,7 @@ class CreateUserForm(UserCreationForm):
         return username
 
 
-class UserUpdateForm(forms.ModelForm):
+class UserUpdateForm(UserValidationMixin, forms.ModelForm):
     class Meta:
         model = get_user_model()
         fields = ['first_name', 'last_name', 'email']

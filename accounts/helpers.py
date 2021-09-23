@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.views.generic.base import ContextMixin, View
 from django.urls import reverse_lazy
 
@@ -43,3 +44,20 @@ class DeleteOldPhotoMixin(View):
                 os.remove(self.object.profile.avatar.path)
             except Exception as e:
                 print('Exception in removing old profile image: ', e)
+
+
+class UserValidationMixin:
+    cleaned_data = None
+
+    def clean(self):
+        first_name = self.cleaned_data.get('first_name')
+        last_name = self.cleaned_data.get('last_name')
+        if not first_name and not last_name:
+            raise ValidationError('First name or last name required!')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError('Email is required!')
+        return email
+
