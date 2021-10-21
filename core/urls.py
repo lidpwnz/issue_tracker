@@ -31,5 +31,5 @@ urlpatterns = [
     path('projects/', include('issue_tracker.urls.projects_urls', namespace='projects')),
     path('accounts/', include('accounts.urls', namespace='acc')),
     path('', include('django.contrib.auth.urls')),
-
+    path('api/v1/', include('api_v1.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
