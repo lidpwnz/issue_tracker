@@ -9,7 +9,7 @@ from api_v1.serializers import IssueSerializer
 from issue_tracker.models import Issue
 
 
-class UpdateAPIView(APIView):
+class DetailsAPIView(APIView):
     serializer_class: BaseSerializer = IssueSerializer
     queryset = Issue.objects.all()
 
@@ -22,4 +22,10 @@ class UpdateAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        issue: Issue = self.get_object()
+        serializer: IssueSerializer = IssueSerializer(instance=issue)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
