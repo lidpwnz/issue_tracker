@@ -28,4 +28,7 @@ class DetailsAPIView(APIView):
         serializer: IssueSerializer = IssueSerializer(instance=issue)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def delete(self, request, *args, **kwargs):
+        self.get_object().delete()
+        return Response({'response': 'Successfully Deleted'}, status=status.HTTP_205_RESET_CONTENT)
 
