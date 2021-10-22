@@ -23,7 +23,7 @@ class UserSerializer(ModelSerializer):
 
 
 class ProjectSerializer(ModelSerializer):
-    users: ModelSerializer = UserSerializer()
+    users: ModelSerializer = UserSerializer(many=True, required=False)
 
     class Meta:
         model = Project
